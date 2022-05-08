@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>GPS Tracker</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+        width: 50%;
+        float: right;
+  /* The width is the width of the web page */
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 10;
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAJuzWQWnaJSm2daA67BL28YOeOiN8fqjw"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script>
+
+      var map;
+        var x;
+        function loadmaps(){
+            $.getJSON("https://api.thingspeak.com/channels/1693100/fields/1/last.json?api_key=6LNPU3Q7ZLML2D5N", function(result){
+
+            var m = result;
+            x=Number(m.field1);
+                           //alert(x);
+
+        });
+            $.getJSON("https://api.thingspeak.com/channels/1693100/fields/2/last.json?api_key=6LNPU3Q7ZLML2D5N", function(result){
+
+            var m = result;
+            y=Number(m.field2);
+
+
+        }).done(function() {
+
+                initialize();
+    });
+
+        }
+        window.setInterval(function(){
+        loadmaps();
+            }, 9000);
+      function initialize() {
+          //alert(y);
+        var mapOptions = {
+          zoom: 18,
+          center: {lat: x, lng: y}
+        };
+        map = new google.maps.Map(document.getElementById('map'),
+            mapOptions);
+
+        var marker = new google.maps.Marker({
+          position: {lat: x, lng: y},
+          map: map
+        });
+
+        var infowindow = new google.maps.InfoWindow({
+          content: '<p>Marker Location:' + marker.getPosition() + '</p>'
+        });
+
+        google.maps.event.addListener(marker, 'click', function() {
+          infowindow.open(map, marker);
+        });
+      }
+
+      google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+  </head>
+  <body style  = "background-color: #DBF9FC">
+    <div id="map"></div>
+    <center>
+    <h1 style="color:red;font-size:40px;padding-top: 170px">Emergency Numbers</h1>
+  </center>
+  <table align = center>
+    <thead>
+      <tr>
+        <th><img src="GPS.png" width="190" height="170" align = left></th>
+        <th style="padding:20px"><img src="NAS.png" width="190" height="170" align = left></th>
+      </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td style="padding-left: 80px"><a href="tel:191" font-size:20px>191</a></td>
+      <td style="padding-left: 100px"><a href="tel:193" font-size:20px>193</a></td>
+    </tr>
+  </tbody>
+
+
+</table>
+
+  </body>
+</html>
